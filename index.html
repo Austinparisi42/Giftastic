@@ -58,12 +58,14 @@
 
 
             renderButtons();
+            $("#poke-input").val("");
+
         });
 
 
-        renderButtons();
 
-        $(".pokemon").on("click", function() {
+
+        $(document).on("click", ".pokemon", function() {
 
             var buttonClick = $(this).attr("data-name");
 
@@ -77,15 +79,17 @@
 
                 .done(function(response) {
                     var results = response.data;
-
+                        console.log(results);
                     for (var i = 0; i < 10; i++) {
                         if (results[i].rating !== "r") {
-                            var gifDiv = $("<div class='item'>");
+                            var gifDiv = $("<div>");
                             var rating = results[i].rating;
+
                             var p = $("<p>").text("Rating: " + rating);
-                            var pokeImage = $("<img>");
-                            pokeImage.attr("src", results[i].images.fixed_height.url);
                             gifDiv.append(p);
+                            var pokeImage = $("<img class='item'>").attr("src", results[i].images.fixed_height_still.url).val(i);
+                            // pokeImage
+                            
                             gifDiv.append(pokeImage);
 
                             $("#gifs-go-here").prepend(gifDiv);
@@ -93,21 +97,25 @@
                         }
 
                     }
+                    $(".item").on("click", function() {
+                        console.log(results);
+                        console.log(this);
+                        var state = $(this).attr("data-state");
+
+                        if (state !== "animate") {
+                            $(this).attr("src", results[this.value].images.fixed_height.url);
+                            $(this).attr("data-state", "animate");
+                        } else {
+                            $(this).attr("src", results[this.value].images.fixed_height_still.url);
+                            $(this).attr("data-state", "still");
+                        }
+                    });
                 })
 
         });
-        $(".item").on("click", function() {
 
-            var state = $(this).attr("data-state");
 
-            if (state === "still") {
-                $(this).attr("src", $(this).attr("data-animate"));
-                $(this).attr("data-state", "animate");
-            } else {
-                $(this).attr("src", $(this).attr("data-still"));
-                $(this).attr("data-state", "still");
-            }
-        });
+        renderButtons();
         </script>
     </div>
 </body>
